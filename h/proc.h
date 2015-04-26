@@ -60,6 +60,9 @@ struct	pentry	{
 	int	fildes[_NFILE];		/* file - device translation	*/
 	int	ppagedev;		/* pageing dgram device		*/
 	int	pwaitret;
+	
+	int plock;	/*lock if process waiting*/
+	int plockwaitret;	/*RETURN value on lock*/
 };
 
 
