@@ -12,7 +12,7 @@
  *------------------------------------------------------------------------
  */
 
-LOCAL insert2(int proc, int head, int key, int type){
+LOCAL insert2(int proc, int head, int key, int type, int ltimed){
 
 	int	next;			/* runs through list		*/
 	int	prev;
@@ -25,7 +25,7 @@ LOCAL insert2(int proc, int head, int key, int type){
 	q[proc].qkey  = key;
 
 q[proc].ltype = type;
-q[proc].ltime = ctr1000;
+q[proc].ltime = ltimed;
 
 
 	q[prev].qnext = proc;
@@ -70,7 +70,7 @@ SYSCALL	lock(int ldes1, int type, int priority)
 		(pptr = &proctab[currpid])->pstate = PRWAIT;
 		pptr->plock = lock;
 		//enqueue(currpid,lptr->lqtail);INSERT
-		insert2(currpid,lptr->lqtail,priority,type);
+		insert2(currpid,lptr->lqtail,priority,type,ctr1000);
 		pptr->plockwaitret = OK;
 		resched();
 		restore(ps);

@@ -11,7 +11,7 @@
 
 //#define	isempty(list)	(q[(list)].qnext >= NPROC)
 //#define	nonempty(list)	(q[(list)].qnext < NPROC)
-#define	getlkey(list)	(q[q[(list)].qnext].qkey)//key is nothing but the priority
+#define	getlkey(list)	(q[q[(list)].qnext].qkey)//key is nothing but the priority. similar to firstkey
 #define getltype(list)	(q[q[(list)].qnext].ltype)
 #define getltime(list)	(q[q[(list)].qnext].ltime)
 //#define lastkey(tail)	(q[q[(tail)].qprev].qkey)
@@ -44,15 +44,49 @@ SYSCALL releaseall(int numlocks,int args);
 			}else{			
 				lptr->lusers[currpid]=0;
 				lptr->lcnt--;
-if(lptr->lcnt==0){ 
-// schedule next on queue
-// if type=read, release all other process waiting with type = read and priority greater than any other waiting process with type = write.
-int firstwaitprio = getlkey(lptr->lqhead);
-int firstproc = getfirst(lptr->lqhead);
+				if(lptr->lcnt==0){ 
+				// schedule next on queue
+				// if type=read, release all other process waiting with type = read and priority greater than any other waiting process with type = write.
+					if(nonempty(lptr->lqhead)){
+//without the one second condition
+						tLtype = getltype(lptr->lqhead);
+						tProc = getfirst(lptr->lqhead);
+						ready(tProc,RESCHNO);
+						while(tLtype != LWRITE){
+							tProc = getfirst(lptr->lqhead);
+//SHOULD CHECK FOR SYSERR right? or do a nonempty
+//SETTING lock entry
+							ready(tProc,RESCHNO);
+							tLtype = getltype(lptr->lqhead);
+						}
+						
 
-					ready(getfirst(lptr->lqhead), RESCHNO);
-}
 
+
+
+
+
+
+						/*int tWaitPrio = getlkey(lptr->lqhead);
+						int tWaitTime = getltime(lptr->lqhead);
+						int tLtype = getltype(lptr->lqhead);
+						int tProc = getfirst(lptr->lqhead);
+						if(tLtype != LWRITE){
+							while(firstwaitprio == getlkey(lptr->lqhead))
+								if(firstwaittime < getltime(lptr->lqhead)+1000){
+									if(getltype(lptr->lqhead)==LWRITE){
+										insert2(tProc,lptr->lqtail,tWaittPrio,tLtype,tWaitTime);
+										tProc = getfirst(lptr->lqhead);tLytpe=LWRITE;ready(tProc, RESCHNO);
+										break;
+									}
+								}
+							}
+						}else{//WRITE
+							ready(tProc, RESCHNO);
+						}*/
+
+					}				
+				}
 			}
 		}
 	}
@@ -61,3 +95,16 @@ int firstproc = getfirst(lptr->lqhead);
 	return(retVal);
 }
 
+
+
+
+
+LOCAL int yourLuck(int lock){
+	register struct	lentry	*tptr;
+int tWaitPrio = getlkey(lptr->lqhead);
+int tWaitTime = getltime(lptr->lqhead);
+int tLtype = getltype(lptr->lqhead);
+int tProc = getfirst(lptr->lqhead);
+
+
+}
