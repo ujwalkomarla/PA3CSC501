@@ -47,7 +47,8 @@ SYSCALL releaseall(int numlocks,int args);
 if(lptr->lcnt==0){ 
 // schedule next on queue
 // if type=read, release all other process waiting with type = read and priority greater than any other waiting process with type = write.
-
+int firstwaitprio = getlkey(lptr->lqhead);
+int firstproc = getfirst(lptr->lqhead);
 
 					ready(getfirst(lptr->lqhead), RESCHNO);
 }
