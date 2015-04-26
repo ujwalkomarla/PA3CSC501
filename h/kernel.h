@@ -2,7 +2,7 @@
 
 #ifndef _KERNEL_H_
 #define _KERNEL_H_
-
+#define DEBUG
 /* Symbolic constants used throughout Xinu */
 
 typedef	char		Bool;		/* Boolean type			*/
@@ -160,7 +160,7 @@ SYSCALL	wait(int sem);
 SYSCALL lcreate(void);
 SYSCALL ldelete(int lockdescriptor);
 SYSCALL lock (int ldes1, int type, int priority);
-SYSCALL releaseall(int nargs, int args);
+SYSCALL releaseall(int nargs, int args, ...);
 
 
 int strtclk();

@@ -16,20 +16,24 @@ LOCAL int newlock();
 SYSCALL lcreate(void)
 {
 	STATWORD ps;    
-	int	lock;
+	int	tlock;
 
 	disable(ps);
-	if ((lock=newlock())==SYSERR ) {
+	if ((tlock=newlock())==SYSERR ) {
 		restore(ps);
 		return(SYSERR);
 	}
-	locks[lock].lcnt = 0;
+	locks[tlock].lcnt = 0;
 	/* lqhead and lqtail were initialized at system startup */
-	locks[lock].lowner = currpid;
-int i;for(i=0;i<NPROC;i++)locks[lock].lusers[i] = 0;
-	locks[lock].ldesc = appendDesc++;
+	locks[tlock].lowner = currpid;
+int i;for(i=0;i<NPROC;i++)locks[tlock].lusers[i] = 0;
+	locks[tlock].ldesc = appendDesc;
+appendDesc++;
 	restore(ps);
-	return((locks[lock].ldesc<<6)||lock);//UNIQUE lock descriptor
+#ifdef DEBUG
+kprintf("lock descriptor %x\r\n",(locks[tlock].ldesc<<6)|tlock);
+#endif
+	return((locks[tlock].ldesc<<6)|tlock);//UNIQUE lock descriptor
 }
 
 /*------------------------------------------------------------------------
@@ -38,16 +42,16 @@ int i;for(i=0;i<NPROC;i++)locks[lock].lusers[i] = 0;
  */
 LOCAL int newlock()
 {
-	int	lock;
+	int	tlock;
 	int	i;
 
-	for (i=0 ; i<NLOCK ; i++) {
-		lock=nextlock--;
+	for (i=0 ; i<NLOCKS ; i++) {
+		tlock=nextlock--;
 		if (nextlock < 0)
-			nextlock = NLOCK-1;
-		if (lentry[lock].lstate==LFREE) {
-			lentry[lock].lstate = LUSED;
-			return(lock);
+			nextlock = NLOCKS-1;
+		if (locks[tlock].lstate==LFREE) {
+			locks[tlock].lstate = LUSED;
+			return(tlock);
 		}
 	}
 	return(SYSERR);

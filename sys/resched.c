@@ -35,9 +35,15 @@ int resched()
 	}
 
 	/* remove highest priority process at end of ready list */
-
+#ifdef DEBUG
+kprintf("currpid = %d, state = %d;",currpid, proctab[currpid].pstate);
+#endif
 	nptr = &proctab[ (currpid = getlast(rdytail)) ];
+
 	nptr->pstate = PRCURR;		/* mark it currently running	*/
+#ifdef DEBUG
+kprintf("next currpid = %d, state = %d\r\n",currpid, proctab[currpid].pstate);
+#endif
 #ifdef	RTCLOCK
 	preempt = QUANTUM;		/* reset preemption counter	*/
 #endif

@@ -1,10 +1,11 @@
+//#define DEBUG
 /* lock.h - isbadlock */
 //#include <proc.h>
 #ifndef _LOCK_H_
 #define _LOCK_H_
 
-#ifndef	NLOCK
-#define	NLOCK		50	/* number of locks, if not defined	*/
+#ifndef	NLOCKS
+#define	NLOCKS		50	/* number of locks, if not defined	*/
 #endif
 
 #define	LFREE	'\01'		/* this lock is free		*/
@@ -26,7 +27,7 @@ struct	lentry	{		/* lock table entry		*/
 
 //Which all process hold the lock, as in created or acquired the lock.
 	int lowner;//REQUIRED?
-	int lusers[NPROC];//for READ locks?
+	int lusers[NLOCKS];//for READ locks?
 
 
 
@@ -38,7 +39,9 @@ struct	lentry	{		/* lock table entry		*/
 extern	struct	lentry	locks[];
 extern	int	nextlock;
 extern int appendDesc;
-#define	isbadlock(s)	(s<0 || s>=NLOCK)
+
+void linit(void);
+#define	isbadlock(s)	(s<0 || s>=NLOCKS)
 
 #endif
 

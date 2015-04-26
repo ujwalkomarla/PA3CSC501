@@ -37,4 +37,6 @@ int dequeue(int item)
 	q[mptr->qprev].qnext = mptr->qnext;
 	q[mptr->qnext].qprev = mptr->qprev;
 	return(item);
+
 }
+

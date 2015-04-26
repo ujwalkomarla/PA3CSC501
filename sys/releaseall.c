@@ -21,22 +21,23 @@
  * releaseall  --  release 'numlocks' number of locks, and corresponding lock's one waiting process
  *------------------------------------------------------------------------
  */
-SYSCALL releaseall(int numlocks,int args);
-
+SYSCALL releaseall(int numlocks,int args, ...)
 {
 	STATWORD ps;    
 	register struct	lentry	*lptr;
 
 	disable(ps);
-	int passedPar,lock,descript;
+	int passedPar,tlock,descript;
+
+int tLtype, tProc;
 	int retVal = OK;
 	unsigned long	*a;		/* points to list of args	*/
 	a = (unsigned long *)(&args) + (numlocks-1);
 	for(;numlocks>0;numlocks--){
 		passedPar = *a--;
 		descript = passedPar >> 6;
-		lock = passedPar & 63;
-		if (isbadlock(lock) || (lptr= &locks[lock])->lstate==LFREE || lptr->ldesc != descrpit) {
+		tlock = passedPar & 63;
+		if (isbadlock(tlock) || (lptr= &locks[tlock])->lstate==LFREE || lptr->ldesc != descript) {
 			retVal = SYSERR;
 		}else{
 			if(lptr->lusers[currpid]!=1){
@@ -52,21 +53,13 @@ SYSCALL releaseall(int numlocks,int args);
 						tLtype = getltype(lptr->lqhead);
 						tProc = getfirst(lptr->lqhead);
 						ready(tProc,RESCHNO);
-						while(tLtype != LWRITE && nonempty(lptr->lqhead)){
+						while(tLtype != WRITE && nonempty(lptr->lqhead)){
 							tProc = getfirst(lptr->lqhead);
 //SHOULD CHECK FOR SYSERR right? or do a nonempty
 //SETTING lock entry
 							ready(tProc,RESCHNO);
 							tLtype = getltype(lptr->lqhead);
 						}
-						
-
-
-
-
-
-
-
 						/*int tWaitPrio = getlkey(lptr->lqhead);
 						int tWaitTime = getltime(lptr->lqhead);
 						int tLtype = getltype(lptr->lqhead);
@@ -97,7 +90,7 @@ SYSCALL releaseall(int numlocks,int args);
 
 
 
-
+/*
 
 LOCAL int yourLuck(int lock){
 	register struct	lentry	*tptr;
@@ -107,4 +100,4 @@ int tLtype = getltype(lptr->lqhead);
 int tProc = getfirst(lptr->lqhead);
 
 
-}
+}*/
