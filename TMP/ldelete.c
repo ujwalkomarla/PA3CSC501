@@ -16,7 +16,7 @@ SYSCALL ldelete(int lockdescriptor)
 	STATWORD ps;    
 	int	pid;
 	struct	lentry	*lptr;
-	int lock = lockdescriptor && 63;
+	int lock = lockdescriptor & 63;
 	int descript = lockdescriptor>>6;
 	disable(ps);
 	//CHECK if it is an owner?
@@ -29,7 +29,9 @@ SYSCALL ldelete(int lockdescriptor)
 	if (nonempty(lptr->lqhead)) {
 		while( (pid=getfirst(lptr->lqhead)) != EMPTY)
 		  {
+
 		    proctab[pid].plockwaitret = DELETED;
+//kprintf(" pid %d, lockwaitret %d\r\n",pid,proctab[pid].plockwaitret);
 		    ready(pid,RESCHNO);
 		  }
 		resched();

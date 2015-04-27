@@ -72,12 +72,12 @@ kprintf("acquired lptr->ltype = %c\r\n",(lptr->ltype==READ)?'R':'W');
 
 
 	//After returning by gaining the lock
-		if(pptr->plockwaitret != DELETED){		
-				lptr->lcnt++;
-				lptr->ltype = type;
-				lptr->lusers[currpid]=1;
-		}
-kprintf("Lock Return Value %d",pptr->plockwaitret);
+if(pptr->plockwaitret!=DELETED){
+		lptr->lcnt++;
+		lptr->ltype = type;
+		lptr->lusers[currpid]=1;
+}
+//kprintf(" pid %d, lockwaitret %d\r\n",currpid,pptr->plockwaitret);
 		return pptr->plockwaitret;
 	}
 }
