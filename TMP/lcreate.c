@@ -30,7 +30,7 @@ int i;for(i=0;i<NPROC;i++)locks[tlock].lusers[i] = 0;
 	locks[tlock].ldesc = appendDesc;
 appendDesc++;
 	restore(ps);
-#ifdef DEBUG
+#ifdef DEBUG1
 kprintf("lock descriptor %x\r\n",(locks[tlock].ldesc<<6)|tlock);
 #endif
 	return((locks[tlock].ldesc<<6)|tlock);//UNIQUE lock descriptor

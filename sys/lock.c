@@ -26,7 +26,7 @@ kprintf("%d lock descriptor %x ? %x\r\n",tlock,lptr->ldesc, descript );
 		restore(ps);
 		return(SYSERR);
 	}
-#ifdef DEBUG
+#ifdef DEBUG1
 kprintf("acquire lock type = %c\r\n",type==READ?'R':'W');
 #endif
 	if(lptr->lcnt == 0){//If no one is holding the lock.
@@ -40,7 +40,10 @@ kprintf("acquired lptr->lcnt = %d\r\n",lptr->lcnt);
 		return(OK);
 	}else{
 		if(type == READ && lptr->ltype == READ){
-			if(priority >= firstkey(lptr->lqtail)){//if priority >= waiting WRITE process priority
+			if(priority >= lastkey(lptr->lqtail)){//if priority >= waiting WRITE process priority
+#ifdef DEBUG1
+kprintf("firstkey is %d, asking is %d\r\n",lastkey(lptr->lqtail),priority);
+#endif
 				lptr->lcnt++;
 				lptr->lusers[currpid]=1;
 				restore(ps);
@@ -69,9 +72,12 @@ kprintf("acquired lptr->ltype = %c\r\n",(lptr->ltype==READ)?'R':'W');
 
 
 	//After returning by gaining the lock
-		lptr->lcnt++;
-		lptr->ltype = type;
-		lptr->lusers[currpid]=1;
+		if(pptr->plockwaitret != DELETED){		
+				lptr->lcnt++;
+				lptr->ltype = type;
+				lptr->lusers[currpid]=1;
+		}
+kprintf("Lock Return Value %d",pptr->plockwaitret);
 		return pptr->plockwaitret;
 	}
 }

@@ -116,9 +116,9 @@ void starve_test()
 
     kprintf("-start reader B20 and writer C20. Sleep 3s\n");
     resume(rd1);
-//    sleep(1);
+sleep(1);
     resume(wr4);
-    sleep(3);
+    sleep(1);
 
     kprintf("-start writer D30. Sleep 2s\n");
     resume(wr2);
@@ -339,10 +339,10 @@ int main() {
 
 
     kprintf("Please Input:\n");
-    //while ((i = read(CONSOLE, buf, sizeof(buf))) <1);
-    //buf[i] = 0;
-    //s = atoi(buf);
-	s=1;
+    while ((i = read(CONSOLE, buf, sizeof(buf))) <1);
+    buf[i] = 0;
+    s = atoi(buf);
+	
     switch (s)
     {
     case 1:

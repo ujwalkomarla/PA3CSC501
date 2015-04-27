@@ -35,13 +35,13 @@ int resched()
 	}
 
 	/* remove highest priority process at end of ready list */
-#ifdef DEBUG
+#ifdef DEBUG1
 kprintf("currpid = %d, state = %d;",currpid, proctab[currpid].pstate);
 #endif
 	nptr = &proctab[ (currpid = getlast(rdytail)) ];
 
 	nptr->pstate = PRCURR;		/* mark it currently running	*/
-#ifdef DEBUG
+#ifdef DEBUG1
 kprintf("next currpid = %d, state = %d\r\n",currpid, proctab[currpid].pstate);
 #endif
 #ifdef	RTCLOCK
